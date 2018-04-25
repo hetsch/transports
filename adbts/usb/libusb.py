@@ -161,6 +161,8 @@ def close(context: Context, handle: Handle, interface_settings: InterfaceSetting
     :rtype: :class:`~NoneType`
     """
     handle.releaseInterface(interface_settings.getNumber())
+    if usb1.hasCapability(usb1.CAP_SUPPORTS_DETACH_KERNEL_DRIVER) and getattr(handle, '__detached_kernel_driver', False):
+        handle.attachKernelDriver(interface_settings.getNumber())
     handle.close()
     context.close()
 
@@ -203,8 +205,9 @@ def claim_interface(handle, interface_settings):
     # Detach any existing kernel drivers for this USB device interface.
     # Note: If the device has "auto_detach_kernel_driver" enabled in the config, it will automatically
     # reattach.
-    if handle.kernelDriverActive(interface):
+    if usb1.hasCapability(usb1.CAP_SUPPORTS_DETACH_KERNEL_DRIVER) and handle.kernelDriverActive(interface):
         handle.detachKernelDriver(interface)
+        setattr(handle, '__detached_kernel_driver', True)
 
     # Claim the USB device interface so we can read/write to its endpoints.
     handle.claimInterface(interface)
