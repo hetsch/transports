@@ -33,7 +33,7 @@ setup(
     license='Apache 2.0',
     description='Android Debug Bridge (ADB) Transports',
     long_description=__doc__,
-    packages=['adbts'],
+    packages=['adbts', 'adbts.tcp', 'adbts.usb'],
     classifiers=(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
